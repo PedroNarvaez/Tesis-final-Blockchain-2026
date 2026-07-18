@@ -1,0 +1,10 @@
+
+> concilialedger-enterprise@1.0.0 dev /app
+> vite
+
+
+  VITE v8.1.5  ready in 307 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+ ELIFECYCLE  Command failed with exit code 143.
