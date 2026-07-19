@@ -1,0 +1,10 @@
+
+> concilialedger-enterprise@1.0.0 dev /app
+> vite
+
+
+  VITE v8.1.5  ready in 272 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+4:41:05 PM [vite] (client) hmr update /src/App.css
