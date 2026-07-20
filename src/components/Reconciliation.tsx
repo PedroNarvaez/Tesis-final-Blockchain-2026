@@ -116,12 +116,15 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
           <div className="space-y-4">
             {/* Rule 1: Tolerancia Monetaria */}
             <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">Tolerancia Monetaria (Gs.)</label>
+              <label htmlFor="tolerancia-monetaria-input" className="text-xs font-semibold text-slate-400 block mb-1 cursor-pointer">
+                Tolerancia Monetaria (Gs.)
+              </label>
               <input
+                id="tolerancia-monetaria-input"
                 type="number"
                 value={localRules.toleranciaMonetaria}
                 onChange={(e) => handleRuleChange('toleranciaMonetaria', parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 min="0"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">Diferencia permitida sin forzar auditoría.</span>
@@ -129,12 +132,15 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
 
             {/* Rule 2: Ventana de Fechas */}
             <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">Ventana de Fechas (Días)</label>
+              <label htmlFor="ventana-fechas-input" className="text-xs font-semibold text-slate-400 block mb-1 cursor-pointer">
+                Ventana de Fechas (Días)
+              </label>
               <input
+                id="ventana-fechas-input"
                 type="number"
                 value={localRules.ventanaFechasDias}
                 onChange={(e) => handleRuleChange('ventanaFechasDias', parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 min="0"
                 max="30"
               />
@@ -143,15 +149,19 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
 
             {/* Rule 3: Autoaprobación Score */}
             <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">Score de Autoaprobación (%)</label>
+              <label htmlFor="autoaprobacion-score-input" className="text-xs font-semibold text-slate-400 block mb-1 cursor-pointer">
+                Score de Autoaprobación (%)
+              </label>
               <div className="flex items-center gap-3">
                 <input
+                  id="autoaprobacion-score-input"
                   type="range"
                   min="50"
                   max="100"
                   value={localRules.scoreAutoaprobacion}
                   onChange={(e) => handleRuleChange('scoreAutoaprobacion', parseInt(e.target.value))}
-                  className="flex-1 accent-blue-500"
+                  className="flex-1 accent-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+                  aria-label="Score de Autoaprobación"
                 />
                 <span className="text-sm font-bold text-white w-8 shrink-0">{localRules.scoreAutoaprobacion}%</span>
               </div>
@@ -159,30 +169,32 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
             </div>
 
             {/* Toggle 4: Exigir RUC */}
-            <div className="flex items-center justify-between py-2 border-t border-b border-slate-800/60">
-              <div>
+            <div className="flex items-center justify-between py-2 border-t border-b border-slate-800/60 hover:bg-slate-800/10 px-1 rounded transition-colors">
+              <label htmlFor="exigir-ruc-checkbox" className="cursor-pointer select-none flex-1">
                 <span className="text-xs font-semibold text-slate-300 block">Exigir Validación de RUC</span>
                 <span className="text-[10px] text-slate-500 block">Comprobar contra padrón DNIT</span>
-              </div>
+              </label>
               <input
+                id="exigir-ruc-checkbox"
                 type="checkbox"
                 checked={localRules.exigirRuc}
                 onChange={(e) => handleRuleChange('exigirRuc', e.target.checked)}
-                className="h-4 w-4 accent-blue-500 rounded cursor-pointer"
+                className="h-4 w-4 accent-blue-500 rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               />
             </div>
 
             {/* Toggle 5: Exigir Misma Cuenta */}
-            <div className="flex items-center justify-between py-2">
-              <div>
+            <div className="flex items-center justify-between py-2 hover:bg-slate-800/10 px-1 rounded transition-colors">
+              <label htmlFor="exigir-misma-cuenta-checkbox" className="cursor-pointer select-none flex-1">
                 <span className="text-xs font-semibold text-slate-300 block">Exigir Cuenta Destino</span>
                 <span className="text-[10px] text-slate-500 block">Coincidir cuenta del ERP y extracto</span>
-              </div>
+              </label>
               <input
+                id="exigir-misma-cuenta-checkbox"
                 type="checkbox"
                 checked={localRules.exigirMismaCuenta}
                 onChange={(e) => handleRuleChange('exigirMismaCuenta', e.target.checked)}
-                className="h-4 w-4 accent-blue-500 rounded cursor-pointer"
+                className="h-4 w-4 accent-blue-500 rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               />
             </div>
           </div>
