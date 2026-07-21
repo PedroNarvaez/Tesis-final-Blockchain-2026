@@ -106,10 +106,13 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 </div>
               ) : (
                 filteredExceptions.map(exc => (
-                  <div
+                  <button
                     key={exc.id}
+                    type="button"
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    aria-selected={selectedCase?.id === exc.id}
+                    aria-label={`Caso de excepción ${exc.id}: ${exc.motivo}. Prioridad: ${exc.prioridad}. Exposición Financiera: Gs. ${exc.exposicion.toLocaleString()}`}
+                    className={`w-full text-left p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -132,7 +135,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>

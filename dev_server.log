@@ -1,10 +1,10 @@
 
 > concilialedger-enterprise@1.0.0 dev /app
-> vite
+> vite --port 3000
 
 
-  VITE v8.1.5  ready in 302 ms
+  VITE v8.1.5  ready in 278 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
- ELIFECYCLE  Command failed with exit code 143.
+4:44:15 PM [vite] (client) hmr update /src/App.css
