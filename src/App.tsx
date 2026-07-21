@@ -50,10 +50,18 @@ function App() {
   const [currentScenario, setCurrentScenario] = useState<'diario' | 'mensual' | 'fraude'>('diario');
   const [ruleConfig, setRuleConfig] = useState<RuleConfig>(initialRuleConfig);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currency, setCurrency] = useState<'PYG' | 'USD'>('PYG');
 
   // Ejecución del motor con reglas actuales
   const { matches, exceptions: engineExceptions } = runReconciliationEngine(ruleConfig);
   const [activeExceptions, setActiveExceptions] = useState<ExceptionCase[]>(engineExceptions);
+
+  const formatMoney = (value: number) => {
+    if (currency === 'USD') {
+      return `$ ${(value / 7800).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+    }
+    return `Gs. ${value.toLocaleString()}`;
+  };
 
   // Cuando se actualizan las reglas, se recalcula
   const handleUpdateRules = (newRules: RuleConfig) => {
@@ -115,6 +123,28 @@ function App() {
           })}
         </nav>
 
+        <div className="px-4 py-3 border-t border-slate-800/60">
+          <span className="text-[10px] text-slate-500 uppercase tracking-widest block mb-2 font-bold">Moneda del Sistema</span>
+          <div className="grid grid-cols-2 gap-1 bg-slate-950 p-1 border border-slate-800 rounded-lg">
+            <button
+              onClick={() => setCurrency('PYG')}
+              className={`py-1 text-xs font-semibold rounded transition-all cursor-pointer ${
+                currency === 'PYG' ? 'bg-blue-600/20 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              PYG (Gs)
+            </button>
+            <button
+              onClick={() => setCurrency('USD')}
+              className={`py-1 text-xs font-semibold rounded transition-all cursor-pointer ${
+                currency === 'USD' ? 'bg-blue-600/20 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              USD ($)
+            </button>
+          </div>
+        </div>
+
         <div className="p-4 border-t border-slate-800 text-center">
           <span className="text-[10px] text-slate-500 uppercase tracking-widest block">Licencia Corporativa</span>
           <p className="text-xs text-slate-300 font-semibold mt-1">SME-PARAGUAY-2025</p>
@@ -166,6 +196,33 @@ function App() {
                 </button>
               );
             })}
+            <div className="pt-4 border-t border-slate-800/60">
+              <span className="text-xs text-slate-500 uppercase tracking-widest block mb-2 font-bold">Moneda del Sistema</span>
+              <div className="grid grid-cols-2 gap-1 bg-slate-900 p-1 border border-slate-800 rounded-lg">
+                <button
+                  onClick={() => {
+                    setCurrency('PYG');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`py-2 text-xs font-semibold rounded transition-all cursor-pointer ${
+                    currency === 'PYG' ? 'bg-blue-600/20 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400'
+                  }`}
+                >
+                  PYG (Gs)
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrency('USD');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`py-2 text-xs font-semibold rounded transition-all cursor-pointer ${
+                    currency === 'USD' ? 'bg-blue-600/20 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400'
+                  }`}
+                >
+                  USD ($)
+                </button>
+              </div>
+            </div>
           </nav>
         </div>
       )}
@@ -200,6 +257,7 @@ function App() {
               }
             }}
             currentScenario={currentScenario}
+            formatMoney={formatMoney}
           />
         )}
 
@@ -208,6 +266,8 @@ function App() {
             matches={matches}
             rules={ruleConfig}
             onUpdateRules={handleUpdateRules}
+            formatMoney={formatMoney}
+            currency={currency}
           />
         )}
 
@@ -215,6 +275,7 @@ function App() {
           <Exceptions
             exceptions={activeExceptions}
             onAction={handleExceptionAction}
+            formatMoney={formatMoney}
           />
         )}
 

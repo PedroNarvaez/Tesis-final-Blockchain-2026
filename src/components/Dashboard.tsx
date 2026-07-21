@@ -30,13 +30,15 @@ interface DashboardProps {
   exceptions: ExceptionCase[];
   setScenario: (scenario: 'diario' | 'mensual' | 'fraude') => void;
   currentScenario: string;
+  formatMoney: (value: number) => string;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   matches,
   exceptions,
   setScenario,
-  currentScenario
+  currentScenario,
+  formatMoney
 }) => {
   // KPIs Calculations
   const totalERPTransactions = matches.length;
@@ -139,7 +141,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <AlertCircle className="h-4 w-4 text-rose-500" />
           </div>
           <div className="mt-4">
-            <h3 className="text-3xl font-semibold tracking-tight text-white">Gs. {totalExposure.toLocaleString()}</h3>
+            <h3 className="text-3xl font-semibold tracking-tight text-white">{formatMoney(totalExposure)}</h3>
             <p className="text-xs text-slate-400 mt-1">
               Monto en bandeja de excepciones pendientes
             </p>

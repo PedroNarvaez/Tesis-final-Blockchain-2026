@@ -17,12 +17,16 @@ interface ReconciliationProps {
   matches: ReconciliationMatch[];
   rules: RuleConfig;
   onUpdateRules: (newRules: RuleConfig) => void;
+  formatMoney: (value: number) => string;
+  currency: 'PYG' | 'USD';
 }
 
 export const Reconciliation: React.FC<ReconciliationProps> = ({
   matches,
   rules,
-  onUpdateRules
+  onUpdateRules,
+  formatMoney,
+  currency
 }) => {
   const [localRules, setLocalRules] = useState<RuleConfig>(rules);
   const [filterStatus, setFilterStatus] = useState<string>('todos');
@@ -127,7 +131,9 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                 className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 min="0"
               />
-              <span className="text-[10px] text-slate-500 mt-1 block">Diferencia permitida sin forzar auditoría.</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">
+                Diferencia permitida sin forzar auditoría. {currency === 'USD' && `(Equiv. a ${formatMoney(localRules.toleranciaMonetaria)})`}
+              </span>
             </div>
 
             {/* Rule 2: Ventana de Fechas */}
@@ -261,7 +267,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                             <div>
                               <span className="font-semibold text-white block">{m.erpId}</span>
                               <span className="text-slate-400 font-mono text-[10px] block">RUC: {m.rucERP}</span>
-                              <span className="text-slate-500 text-[10px]">{m.fechaERP} | Gs. {(m.montoERP || 0).toLocaleString()}</span>
+                              <span className="text-slate-500 text-[10px]">{m.fechaERP} | {formatMoney(m.montoERP || 0)}</span>
                             </div>
                           ) : (
                             <span className="text-slate-500 italic">No requiere</span>
@@ -272,7 +278,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                             <div>
                               <span className="font-semibold text-white block">{m.bankId}</span>
                               <span className="text-slate-400 font-mono text-[10px] block">RUC: {m.rucBanco}</span>
-                              <span className="text-slate-500 text-[10px]">{m.fechaBanco} | Gs. {(m.montoBanco || 0).toLocaleString()}</span>
+                              <span className="text-slate-500 text-[10px]">{m.fechaBanco} | {formatMoney(m.montoBanco || 0)}</span>
                             </div>
                           ) : (
                             <span className="text-slate-500 italic">No requiere</span>
@@ -303,7 +309,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                       <p className="text-slate-400 font-medium mt-0.5">{e.cliente}</p>
                       <span className="text-[10px] text-slate-500">{e.fecha} | RUC: {e.ruc}</span>
                     </div>
-                    <span className="font-bold text-white shrink-0">Gs. {e.monto.toLocaleString()}</span>
+                    <span className="font-bold text-white shrink-0">{formatMoney(e.monto)}</span>
                   </div>
                 ))}
               </div>
@@ -320,7 +326,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                       <p className="text-slate-400 font-medium mt-0.5 truncate max-w-[160px]">{b.descripcion}</p>
                       <span className="text-[10px] text-slate-500">{b.fecha} | RUC: {b.ruc}</span>
                     </div>
-                    <span className="font-bold text-white shrink-0">Gs. {b.monto.toLocaleString()}</span>
+                    <span className="font-bold text-white shrink-0">{formatMoney(b.monto)}</span>
                   </div>
                 ))}
               </div>

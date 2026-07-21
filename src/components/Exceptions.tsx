@@ -17,11 +17,13 @@ import {
 interface ExceptionsProps {
   exceptions: ExceptionCase[];
   onAction: (excId: string, action: 'aprobado' | 'investigando' | 'reprocesado') => void;
+  formatMoney: (value: number) => string;
 }
 
 export const Exceptions: React.FC<ExceptionsProps> = ({
   exceptions,
-  onAction
+  onAction,
+  formatMoney
 }) => {
   const [selectedCase, setSelectedCase] = useState<ExceptionCase | null>(null);
   const [activeFilter, setActiveFilter] = useState<'todos' | 'pendiente' | 'procesados'>('todos');
@@ -129,7 +131,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
                     <div className="text-right shrink-0">
                       <span className="text-[10px] text-slate-400 uppercase font-semibold block">Exposición Financiera</span>
-                      <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
+                      <span className="text-sm font-bold text-rose-400 font-mono">{formatMoney(exc.exposicion)}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
                   </div>
@@ -163,7 +165,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 <div className="grid grid-cols-2 gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800">
                   <div>
                     <span className="text-slate-500 text-[10px] uppercase font-semibold">Exposición</span>
-                    <p className="text-xs font-bold text-white font-mono mt-0.5">Gs. {selectedCase.exposicion.toLocaleString()}</p>
+                    <p className="text-xs font-bold text-white font-mono mt-0.5">{formatMoney(selectedCase.exposicion)}</p>
                   </div>
                   <div>
                     <span className="text-slate-500 text-[10px] uppercase font-semibold">Confianza</span>
