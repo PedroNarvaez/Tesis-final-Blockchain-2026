@@ -1,0 +1,3 @@
+## 2026-07-20 - Accessible and Clickable Configuration Inputs and Checkboxes
+**Learning:** In complex enterprise dashboards, sidebar controls and filters often suffer from poor accessibility (missing htmlFor/id associations) and tiny click targets for checkbox/toggle inputs. Associating labels properly and making entire row blocks clickable with subtle hover highlights greatly enhances interaction convenience, especially on smaller screens or for keyboard-only/screen-reader users.
+**Action:** Always link form labels to their inputs using htmlFor and unique IDs. For checkboxes or toggles, wrap the descriptions in label tags and make the container interactive/clickable so that clicking any descriptive text toggles the target checkbox directly.
