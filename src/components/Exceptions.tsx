@@ -25,6 +25,19 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 }) => {
   const [selectedCase, setSelectedCase] = useState<ExceptionCase | null>(null);
   const [activeFilter, setActiveFilter] = useState<'todos' | 'pendiente' | 'procesados'>('todos');
+  const [toast, setToast] = useState<{ id: string; msg: string; tipo: 'aprobado' | 'investigando' | 'reprocesado' } | null>(null);
+  const [toastTimeoutId, setToastTimeoutId] = useState<any>(null);
+
+  const triggerToast = (id: string, msg: string, tipo: 'aprobado' | 'investigando' | 'reprocesado') => {
+    if (toastTimeoutId) {
+      clearTimeout(toastTimeoutId);
+    }
+    setToast({ id, msg, tipo });
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 4000);
+    setToastTimeoutId(timer);
+  };
 
   const filteredExceptions = exceptions.filter(e => {
     if (activeFilter === 'todos') return true;
@@ -109,7 +122,16 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <div
                     key={exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCase(exc);
+                      }
+                    }}
+                    aria-selected={selectedCase?.id === exc.id}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -188,6 +210,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
+                        triggerToast(selectedCase.id, 'Aprobado exitosamente y firmado off-chain.', 'aprobado');
                       }}
                       className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
                     >
@@ -199,6 +222,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
+                        triggerToast(selectedCase.id, 'Petición de investigación enviada al analista.', 'investigando');
                       }}
                       className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
                     >
@@ -210,6 +234,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
+                        triggerToast(selectedCase.id, 'Reprocesamiento forzado en la cola de control.', 'reprocesado');
                       }}
                       className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
                     >
@@ -238,6 +263,38 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         </div>
 
       </div>
+
+      {/* Accessible visual toast notification */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 max-w-sm bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-4 flex items-center gap-3.5 z-50 transition-all animate-in fade-in slide-in-from-bottom-5 duration-300"
+        >
+          <div className={`p-2 rounded-lg shrink-0 ${
+            toast.tipo === 'aprobado' ? 'bg-emerald-500/20 text-emerald-400' :
+            toast.tipo === 'investigando' ? 'bg-blue-500/20 text-blue-400' :
+            'bg-slate-800 text-slate-300'
+          }`}>
+            {toast.tipo === 'aprobado' ? <CheckCircle className="h-5 w-5" /> :
+             toast.tipo === 'investigando' ? <Play className="h-5 w-5" /> :
+             <RotateCw className="h-5 w-5" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-xs font-bold text-white tracking-wide">Acción Registrada</h4>
+            <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+              <span className="font-mono text-slate-300 font-semibold">{toast.id}</span>: {toast.msg}
+            </p>
+          </div>
+          <button
+            onClick={() => setToast(null)}
+            className="text-slate-500 hover:text-slate-300 p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
+            aria-label="Cerrar notificación"
+          >
+            <span className="text-xs font-bold">✕</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
