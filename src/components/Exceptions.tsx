@@ -108,8 +108,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 filteredExceptions.map(exc => (
                   <div
                     key={exc.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCase(exc);
+                      }
+                    }}
+                    aria-label={`Ver detalles del caso de excepción ${exc.id}: ${exc.motivo}`}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -189,7 +198,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Aprobar transacción de forma manual"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -200,7 +210,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Investigar transacción y solicitar documentación adicional"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -211,7 +222,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Forzar reprocesamiento automático de la transacción"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento

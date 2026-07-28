@@ -1,3 +1,7 @@
 ## 2026-07-20 - Accessible and Clickable Configuration Inputs and Checkboxes
 **Learning:** In complex enterprise dashboards, sidebar controls and filters often suffer from poor accessibility (missing htmlFor/id associations) and tiny click targets for checkbox/toggle inputs. Associating labels properly and making entire row blocks clickable with subtle hover highlights greatly enhances interaction convenience, especially on smaller screens or for keyboard-only/screen-reader users.
 **Action:** Always link form labels to their inputs using htmlFor and unique IDs. For checkboxes or toggles, wrap the descriptions in label tags and make the container interactive/clickable so that clicking any descriptive text toggles the target checkbox directly.
+
+## 2026-07-21 - Keyboard-accessible List Items and Interactive Pseudo-buttons
+**Learning:** High-density enterprise dashboards often display interactive information in lists/rows (like exceptions or audit blocks) which act as pseudo-buttons to trigger a detailed inspector view. Screen readers and keyboard users cannot easily navigate, focus on, or activate these pseudo-buttons unless they have semantic ARIA roles, an explicit `tabIndex`, keydown handlers, and clear visual focus indicators.
+**Action:** When designing clickable dashboard list items, always equip them with `role="button"`, `tabIndex={0}`, an appropriate `aria-label`, an `onKeyDown` handler (for 'Enter' and 'Space' keys), and visual keyboard focus highlights (`focus-visible:ring-2`).
