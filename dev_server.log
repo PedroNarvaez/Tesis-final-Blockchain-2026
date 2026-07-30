@@ -1,9 +1,6 @@
 
-> concilialedger-enterprise@1.0.0 dev /app
-> vite
-
-
-  VITE v8.1.5  ready in 302 ms
+> concilialedger-enterprise@1.0.0 preview /app
+> vite preview --port 3000
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
