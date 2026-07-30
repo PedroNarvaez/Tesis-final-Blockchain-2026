@@ -99,7 +99,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
               <span className="text-xs text-slate-400 font-semibold">Resolución conforme a SLA corporativo</span>
             </div>
 
-            <div className="divide-y divide-slate-800/60">
+            <div className="divide-y divide-slate-800/60" role="listbox" aria-label="Casos Abiertos de Riesgo">
               {filteredExceptions.length === 0 ? (
                 <div className="text-center py-12 text-slate-500 text-sm">
                   No existen excepciones que requieran intervención en esta categoría.
@@ -108,8 +108,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 filteredExceptions.map(exc => (
                   <div
                     key={exc.id}
+                    role="option"
+                    tabIndex={0}
+                    aria-selected={selectedCase?.id === exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCase(exc);
+                      }
+                    }}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
