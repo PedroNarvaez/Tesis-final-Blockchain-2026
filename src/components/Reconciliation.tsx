@@ -212,20 +212,25 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
               </div>
 
               {/* Status filtering */}
-              <div className="flex flex-wrap gap-2">
-                {['todos', 'conciliado', 'diferencia', 'venta_sin_banco', 'banco_sin_erp', 'revision_manual'].map(st => (
-                  <button
-                    key={st}
-                    onClick={() => setFilterStatus(st)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all border ${
-                      filterStatus === st
-                        ? 'bg-blue-600/15 border-blue-500 text-blue-400 font-bold'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                    }`}
-                  >
-                    {st === 'todos' ? 'Todos' : st === 'venta_sin_banco' ? 'Sin Banco' : st === 'banco_sin_erp' ? 'Sin ERP' : st.replace('_', ' ')}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado de cruce">
+                {['todos', 'conciliado', 'diferencia', 'venta_sin_banco', 'banco_sin_erp', 'revision_manual'].map(st => {
+                  const label = st === 'todos' ? 'Todos' : st === 'venta_sin_banco' ? 'Sin Banco' : st === 'banco_sin_erp' ? 'Sin ERP' : st.replace('_', ' ');
+                  return (
+                    <button
+                      key={st}
+                      onClick={() => setFilterStatus(st)}
+                      aria-label={`Filtrar por: ${label}`}
+                      aria-pressed={filterStatus === st}
+                      className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+                        filterStatus === st
+                          ? 'bg-blue-600/15 border-blue-500 text-blue-400 font-bold'
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
