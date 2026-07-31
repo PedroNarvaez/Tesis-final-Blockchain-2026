@@ -78,23 +78,29 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Scenarios triggers */}
-        <div className="flex flex-wrap items-center gap-2 bg-slate-950 p-1.5 border border-slate-800 rounded-lg">
+        <div className="flex flex-wrap items-center gap-2 bg-slate-950 p-1.5 border border-slate-800 rounded-lg" role="group" aria-label="Selección de Escenario Financiero">
           <span className="text-xs font-semibold px-2 text-slate-400 uppercase tracking-wider">Escenarios:</span>
           <button
             onClick={() => setScenario('diario')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('diario')}`}
+            aria-label="Cargar Escenario: Operación Diaria"
+            aria-pressed={currentScenario === 'diario'}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${getScenarioClass('diario')}`}
           >
             Operación Diaria
           </button>
           <button
             onClick={() => setScenario('mensual')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('mensual')}`}
+            aria-label="Cargar Escenario: Cierre Mensual"
+            aria-pressed={currentScenario === 'mensual'}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${getScenarioClass('mensual')}`}
           >
             Cierre Mensual
           </button>
           <button
             onClick={() => setScenario('fraude')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('fraude')}`}
+            aria-label="Cargar Escenario: Monitoreo Antifraude"
+            aria-pressed={currentScenario === 'fraude'}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${getScenarioClass('fraude')}`}
           >
             Monitoreo Antifraude
           </button>

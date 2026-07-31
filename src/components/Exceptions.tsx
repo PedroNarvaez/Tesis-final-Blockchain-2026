@@ -66,22 +66,28 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         </div>
 
         {/* Status filters */}
-        <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg">
+        <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg" role="group" aria-label="Filtrar excepciones">
           <button
             onClick={() => setActiveFilter('todos')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-label={`Mostrar todas las excepciones, ${exceptions.length} disponibles`}
+            aria-pressed={activeFilter === 'todos'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Todos ({exceptions.length})
           </button>
           <button
             onClick={() => setActiveFilter('pendiente')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-label={`Mostrar excepciones pendientes, ${exceptions.filter(e => e.estado === 'pendiente').length} disponibles`}
+            aria-pressed={activeFilter === 'pendiente'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Pendientes ({exceptions.filter(e => e.estado === 'pendiente').length})
           </button>
           <button
             onClick={() => setActiveFilter('procesados')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-label={`Mostrar excepciones procesadas, ${exceptions.filter(e => e.estado !== 'pendiente').length} disponibles`}
+            aria-pressed={activeFilter === 'procesados'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Procesados ({exceptions.filter(e => e.estado !== 'pendiente').length})
           </button>
@@ -99,7 +105,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
               <span className="text-xs text-slate-400 font-semibold">Resolución conforme a SLA corporativo</span>
             </div>
 
-            <div className="divide-y divide-slate-800/60">
+            <div className="divide-y divide-slate-800/60" role="list" aria-label="Casos de excepción de riesgo">
               {filteredExceptions.length === 0 ? (
                 <div className="text-center py-12 text-slate-500 text-sm">
                   No existen excepciones que requieran intervención en esta categoría.
@@ -109,7 +115,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <div
                     key={exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCase(exc);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Caso ${exc.id}: ${exc.motivo}. Prioridad ${exc.prioridad}, estado ${exc.estado}. Exposición financiera: Gs. ${exc.exposicion.toLocaleString()}.`}
+                    aria-selected={selectedCase?.id === exc.id}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:bg-slate-950/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -189,7 +205,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Aprobar Transacción para este caso de excepción"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -200,7 +217,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Investigar / Solicitar Documentación para este caso de excepción"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -211,7 +229,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      aria-label="Forzar Reprocesamiento para este caso de excepción"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento

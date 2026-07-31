@@ -86,14 +86,24 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
             </div>
 
             {/* Blocks Cards Layout */}
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2" role="list" aria-label="Lista de bloques de la cadena de bloques">
               {blocks.map((block) => {
                 const isSelected = selectedBlock?.indice === block.indice;
                 return (
                   <div
                     key={block.indice}
                     onClick={() => setSelectedBlock(block)}
-                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedBlock(block);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Bloque número ${block.indice}, confirmado el ${block.fecha} por ${block.validador}. Detalle: ${block.evidencias.datosResumen}.`}
+                    aria-selected={isSelected}
+                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 focus-visible:outline-none focus-visible:bg-slate-950/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${
                       isSelected
                         ? 'bg-blue-600/10 border-blue-500'
                         : 'bg-slate-950 border-slate-800'
