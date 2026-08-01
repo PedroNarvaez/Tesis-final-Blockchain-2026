@@ -25,6 +25,14 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 }) => {
   const [selectedCase, setSelectedCase] = useState<ExceptionCase | null>(null);
   const [activeFilter, setActiveFilter] = useState<'todos' | 'pendiente' | 'procesados'>('todos');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'warning' } | null>(null);
+
+  const triggerToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 4000);
+  };
 
   const filteredExceptions = exceptions.filter(e => {
     if (activeFilter === 'todos') return true;
@@ -57,7 +65,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 border border-slate-800 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce transition-all">
+          <Sparkles className="h-5 w-5 text-blue-400 shrink-0" />
+          <div className="text-xs font-semibold">
+            {toast.message}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
@@ -109,7 +127,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <div
                     key={exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCase(exc);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={selectedCase?.id === exc.id}
+                    aria-label={`Caso de excepción ${exc.id}: ${exc.motivo}. Estado: ${exc.estado}. Exposición: ${exc.exposicion} Guaraníes.`}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded-xl ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -188,8 +216,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
+                        triggerToast(`Caso ${selectedCase.id} aprobado con éxito`, 'success');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -199,8 +228,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
+                        triggerToast(`Investigación iniciada para el caso ${selectedCase.id}`, 'info');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -210,8 +240,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
+                        triggerToast(`Reprocesamiento forzado para el caso ${selectedCase.id}`, 'warning');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento
