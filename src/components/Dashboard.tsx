@@ -57,8 +57,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // Scenario descriptions
   const getScenarioClass = (sc: string) => {
     return currentScenario === sc
-      ? 'bg-blue-600/30 border-blue-500 text-blue-200'
-      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700';
+      ? 'bg-blue-600/30 border-blue-500 text-blue-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
+      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
   };
 
   // Preparation for recharts

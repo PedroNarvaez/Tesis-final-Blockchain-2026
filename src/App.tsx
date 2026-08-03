@@ -102,7 +102,8 @@ function App() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                   isActive
                     ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30 font-semibold'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
@@ -129,7 +130,9 @@ function App() {
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-slate-400 hover:text-white p-1"
+          aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={mobileMenuOpen}
+          className="text-slate-400 hover:text-white p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -140,7 +143,11 @@ function App() {
         <div className="md:hidden fixed inset-0 z-50 bg-slate-950/90 flex flex-col p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-lg text-white">Menú Corporativo</h2>
-            <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-white">
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Cerrar menú corporativo"
+              className="text-slate-400 hover:text-white p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
               <X className="h-6 w-6" />
             </button>
           </div>
@@ -155,7 +162,8 @@ function App() {
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all ${
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                     isActive
                       ? 'bg-blue-600/20 text-blue-400 font-bold border border-blue-500/20'
                       : 'text-slate-400 hover:bg-slate-900'
