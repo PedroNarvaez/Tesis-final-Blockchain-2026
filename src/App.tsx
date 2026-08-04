@@ -94,15 +94,19 @@ function App() {
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <nav className="flex-1 px-4 py-6 space-y-1" role="tablist" aria-label="Navegación principal">
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${item.id}`}
+                id={`tab-${item.id}`}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${
                   isActive
                     ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30 font-semibold'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
@@ -129,7 +133,9 @@ function App() {
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-slate-400 hover:text-white p-1"
+          aria-label={mobileMenuOpen ? "Cerrar menú corporativo" : "Abrir menú corporativo"}
+          aria-expanded={mobileMenuOpen}
+          className="text-slate-400 hover:text-white p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 rounded"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -140,22 +146,30 @@ function App() {
         <div className="md:hidden fixed inset-0 z-50 bg-slate-950/90 flex flex-col p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-lg text-white">Menú Corporativo</h2>
-            <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-white">
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Cerrar menú corporativo"
+              className="text-slate-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 rounded p-1"
+            >
               <X className="h-6 w-6" />
             </button>
           </div>
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-2" role="tablist" aria-label="Navegación móvil">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={`panel-${item.id}`}
+                  id={`mobile-tab-${item.id}`}
                   onClick={() => {
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all ${
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${
                     isActive
                       ? 'bg-blue-600/20 text-blue-400 font-bold border border-blue-500/20'
                       : 'text-slate-400 hover:bg-slate-900'
@@ -172,70 +186,84 @@ function App() {
 
       {/* Main Content Pane */}
       <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
-        {activeTab === 'dashboard' && (
-          <Dashboard
-            matches={matches}
-            exceptions={activeExceptions}
-            setScenario={(sc) => {
-              setCurrentScenario(sc);
-              if (sc === 'fraude') {
-                handleUpdateRules({
-                  ...ruleConfig,
-                  exigirRuc: true,
-                  exigirMismaCuenta: true,
-                  scoreAutoaprobacion: 95
-                });
-              } else if (sc === 'diario') {
-                handleUpdateRules({
-                  ...ruleConfig,
-                  toleranciaMonetaria: 5000,
-                  ventanaFechasDias: 3
-                });
-              } else if (sc === 'mensual') {
-                handleUpdateRules({
-                  ...ruleConfig,
-                  toleranciaMonetaria: 1000,
-                  ventanaFechasDias: 1
-                });
-              }
-            }}
-            currentScenario={currentScenario}
-          />
-        )}
+        <div id="panel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" hidden={activeTab !== 'dashboard'}>
+          {activeTab === 'dashboard' && (
+            <Dashboard
+              matches={matches}
+              exceptions={activeExceptions}
+              setScenario={(sc) => {
+                setCurrentScenario(sc);
+                if (sc === 'fraude') {
+                  handleUpdateRules({
+                    ...ruleConfig,
+                    exigirRuc: true,
+                    exigirMismaCuenta: true,
+                    scoreAutoaprobacion: 95
+                  });
+                } else if (sc === 'diario') {
+                  handleUpdateRules({
+                    ...ruleConfig,
+                    toleranciaMonetaria: 5000,
+                    ventanaFechasDias: 3
+                  });
+                } else if (sc === 'mensual') {
+                  handleUpdateRules({
+                    ...ruleConfig,
+                    toleranciaMonetaria: 1000,
+                    ventanaFechasDias: 1
+                  });
+                }
+              }}
+              currentScenario={currentScenario}
+            />
+          )}
+        </div>
 
-        {activeTab === 'reconciliation' && (
-          <Reconciliation
-            matches={matches}
-            rules={ruleConfig}
-            onUpdateRules={handleUpdateRules}
-          />
-        )}
+        <div id="panel-reconciliation" role="tabpanel" aria-labelledby="tab-reconciliation" hidden={activeTab !== 'reconciliation'}>
+          {activeTab === 'reconciliation' && (
+            <Reconciliation
+              matches={matches}
+              rules={ruleConfig}
+              onUpdateRules={handleUpdateRules}
+            />
+          )}
+        </div>
 
-        {activeTab === 'exceptions' && (
-          <Exceptions
-            exceptions={activeExceptions}
-            onAction={handleExceptionAction}
-          />
-        )}
+        <div id="panel-exceptions" role="tabpanel" aria-labelledby="tab-exceptions" hidden={activeTab !== 'exceptions'}>
+          {activeTab === 'exceptions' && (
+            <Exceptions
+              exceptions={activeExceptions}
+              onAction={handleExceptionAction}
+            />
+          )}
+        </div>
 
-        {activeTab === 'blockchain' && (
-          <BlockchainLedger
-            blocks={blocks}
-            matches={matches}
-          />
-        )}
+        <div id="panel-blockchain" role="tabpanel" aria-labelledby="tab-blockchain" hidden={activeTab !== 'blockchain'}>
+          {activeTab === 'blockchain' && (
+            <BlockchainLedger
+              blocks={blocks}
+              matches={matches}
+            />
+          )}
+        </div>
 
-        {activeTab === 'dnit' && (
-          <DnitPortal />
-        )}
+        <div id="panel-dnit" role="tabpanel" aria-labelledby="tab-dnit" hidden={activeTab !== 'dnit'}>
+          {activeTab === 'dnit' && (
+            <DnitPortal />
+          )}
+        </div>
 
-        {activeTab === 'integrations' && (
-          <Integrations />
-        )}
+        <div id="panel-integrations" role="tabpanel" aria-labelledby="tab-integrations" hidden={activeTab !== 'integrations'}>
+          {activeTab === 'integrations' && (
+            <Integrations />
+          )}
+        </div>
 
-        {activeTab === 'governance' && (
-          <Governance />
-        )}
+        <div id="panel-governance" role="tabpanel" aria-labelledby="tab-governance" hidden={activeTab !== 'governance'}>
+          {activeTab === 'governance' && (
+            <Governance />
+          )}
+        </div>
       </main>
     </div>
   );
