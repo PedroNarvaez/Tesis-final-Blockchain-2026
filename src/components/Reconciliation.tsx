@@ -169,11 +169,11 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
             </div>
 
             {/* Toggle 4: Exigir RUC */}
-            <div className="flex items-center justify-between py-2 border-t border-b border-slate-800/60 hover:bg-slate-800/10 px-1 rounded transition-colors">
-              <label htmlFor="exigir-ruc-checkbox" className="cursor-pointer select-none flex-1">
+            <label htmlFor="exigir-ruc-checkbox" className="flex items-center justify-between py-2 border-t border-b border-slate-800/60 hover:bg-slate-800/10 px-1 rounded transition-colors cursor-pointer select-none">
+              <div className="flex-1">
                 <span className="text-xs font-semibold text-slate-300 block">Exigir Validación de RUC</span>
                 <span className="text-[10px] text-slate-500 block">Comprobar contra padrón DNIT</span>
-              </label>
+              </div>
               <input
                 id="exigir-ruc-checkbox"
                 type="checkbox"
@@ -181,14 +181,14 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                 onChange={(e) => handleRuleChange('exigirRuc', e.target.checked)}
                 className="h-4 w-4 accent-blue-500 rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               />
-            </div>
+            </label>
 
             {/* Toggle 5: Exigir Misma Cuenta */}
-            <div className="flex items-center justify-between py-2 hover:bg-slate-800/10 px-1 rounded transition-colors">
-              <label htmlFor="exigir-misma-cuenta-checkbox" className="cursor-pointer select-none flex-1">
+            <label htmlFor="exigir-misma-cuenta-checkbox" className="flex items-center justify-between py-2 hover:bg-slate-800/10 px-1 rounded transition-colors cursor-pointer select-none">
+              <div className="flex-1">
                 <span className="text-xs font-semibold text-slate-300 block">Exigir Cuenta Destino</span>
                 <span className="text-[10px] text-slate-500 block">Coincidir cuenta del ERP y extracto</span>
-              </label>
+              </div>
               <input
                 id="exigir-misma-cuenta-checkbox"
                 type="checkbox"
@@ -196,7 +196,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                 onChange={(e) => handleRuleChange('exigirMismaCuenta', e.target.checked)}
                 className="h-4 w-4 accent-blue-500 rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               />
-            </div>
+            </label>
           </div>
         </div>
 
