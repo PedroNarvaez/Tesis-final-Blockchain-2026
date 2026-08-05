@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ExceptionCase } from '../types';
 import {
   ShieldAlert,
@@ -25,6 +25,18 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 }) => {
   const [selectedCase, setSelectedCase] = useState<ExceptionCase | null>(null);
   const [activeFilter, setActiveFilter] = useState<'todos' | 'pendiente' | 'procesados'>('todos');
+  const [toast, setToast] = useState<{ message: string; visible: boolean; type: 'success' | 'info' | 'indigo' } | null>(null);
+  const toastTimeoutRef = useRef<any>(null);
+
+  const showToast = (message: string, type: 'success' | 'info' | 'indigo') => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    setToast({ message, visible: true, type });
+    toastTimeoutRef.current = setTimeout(() => {
+      setToast(prev => prev ? { ...prev, visible: false } : null);
+    }, 4000);
+  };
 
   const filteredExceptions = exceptions.filter(e => {
     if (activeFilter === 'todos') return true;
@@ -57,7 +69,24 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Toast Notification */}
+      {toast && toast.visible && (
+        <div
+          role="alert"
+          className={`fixed bottom-6 right-6 z-50 p-4 rounded-xl border shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-0 scale-100 ${
+            toast.type === 'success'
+              ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300'
+              : toast.type === 'info'
+              ? 'bg-blue-950/90 border-blue-500/30 text-blue-300'
+              : 'bg-indigo-950/90 border-indigo-500/30 text-indigo-300'
+          }`}
+        >
+          <Sparkles className="h-5 w-5 shrink-0 animate-pulse" />
+          <div className="text-xs font-semibold">{toast.message}</div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
@@ -99,17 +128,19 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
               <span className="text-xs text-slate-400 font-semibold">Resolución conforme a SLA corporativo</span>
             </div>
 
-            <div className="divide-y divide-slate-800/60">
+            <div className="divide-y divide-slate-800/60" role="listbox" aria-label="Casos Abiertos de Riesgo">
               {filteredExceptions.length === 0 ? (
                 <div className="text-center py-12 text-slate-500 text-sm">
                   No existen excepciones que requieran intervención en esta categoría.
                 </div>
               ) : (
                 filteredExceptions.map(exc => (
-                  <div
+                  <button
                     key={exc.id}
+                    role="option"
+                    aria-selected={selectedCase?.id === exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    className={`w-full text-left p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -132,7 +163,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -188,8 +219,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
+                        showToast(`El caso ${selectedCase.id} fue aprobado de manera manual.`, 'success');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -199,8 +231,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
+                        showToast(`Se inició investigación y solicitud de documentos para el caso ${selectedCase.id}.`, 'info');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -210,8 +243,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       onClick={() => {
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
+                        showToast(`Forzando reprocesamiento del motor de reglas para el caso ${selectedCase.id}.`, 'indigo');
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento
