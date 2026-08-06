@@ -105,35 +105,49 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   No existen excepciones que requieran intervención en esta categoría.
                 </div>
               ) : (
-                filteredExceptions.map(exc => (
-                  <div
-                    key={exc.id}
-                    onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
-                  >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-400 font-mono">{exc.id}</span>
-                        {getPriorityBadge(exc.prioridad)}
-                        {getStatusActionBadge(exc.estado)}
+                filteredExceptions.map(exc => {
+                  const isSelected = selectedCase?.id === exc.id;
+                  const handleKeyDown = (e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedCase(exc);
+                    }
+                  };
+                  return (
+                    <div
+                      key={exc.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setSelectedCase(exc)}
+                      onKeyDown={handleKeyDown}
+                      aria-selected={isSelected}
+                      aria-label={`Caso ${exc.id}: ${exc.motivo}. Prioridad: ${exc.prioridad}, Estado: ${exc.estado}, Exposición: Gs. ${exc.exposicion.toLocaleString()}`}
+                      className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${isSelected ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    >
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-bold text-slate-400 font-mono">{exc.id}</span>
+                          {getPriorityBadge(exc.prioridad)}
+                          {getStatusActionBadge(exc.estado)}
+                        </div>
+
+                        <h4 className="text-sm font-semibold text-white">{exc.motivo}</h4>
+                        <p className="text-xs text-slate-400 line-clamp-1 max-w-[480px]">{exc.detalle}</p>
+
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-slate-500">
+                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> SLA: {exc.slaHoras}h (Transcurrido: {exc.transcurridoHoras}h)</span>
+                          <span className="flex items-center gap-1"><User className="h-3 w-3" /> Responsable: {exc.responsable}</span>
+                        </div>
                       </div>
 
-                      <h4 className="text-sm font-semibold text-white">{exc.motivo}</h4>
-                      <p className="text-xs text-slate-400 line-clamp-1 max-w-[480px]">{exc.detalle}</p>
-
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-slate-500">
-                        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> SLA: {exc.slaHoras}h (Transcurrido: {exc.transcurridoHoras}h)</span>
-                        <span className="flex items-center gap-1"><User className="h-3 w-3" /> Responsable: {exc.responsable}</span>
+                      <div className="text-right shrink-0">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold block">Exposición Financiera</span>
+                        <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
+                        <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                       </div>
                     </div>
-
-                    <div className="text-right shrink-0">
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Exposición Financiera</span>
-                      <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
-                      <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
