@@ -1,3 +1,7 @@
 ## 2026-07-20 - Accessible and Clickable Configuration Inputs and Checkboxes
 **Learning:** In complex enterprise dashboards, sidebar controls and filters often suffer from poor accessibility (missing htmlFor/id associations) and tiny click targets for checkbox/toggle inputs. Associating labels properly and making entire row blocks clickable with subtle hover highlights greatly enhances interaction convenience, especially on smaller screens or for keyboard-only/screen-reader users.
 **Action:** Always link form labels to their inputs using htmlFor and unique IDs. For checkboxes or toggles, wrap the descriptions in label tags and make the container interactive/clickable so that clicking any descriptive text toggles the target checkbox directly.
+
+## 2026-08-07 - Semantic Buttons for Clickable Card Items in High-Density Worklists
+**Learning:** High-density dashboards often have list views where items act as buttons, but are coded as raw divs. Converting them to semantic `<button type="button">` elements with specific focus indicators (`focus-visible:ring-2`) and custom `aria-label`/`aria-selected` attributes makes them fully keyboard-navigable and screen-reader friendly without breaking visual layouts. Adding an active toast feedback on resolution completes a delightfully interactive audit flow.
+**Action:** Avoid clickable div patterns for list elements. Always convert them to type="button" element cards with custom ARIA context, explicit focus outline states, and immediate visual/toast confirmations.

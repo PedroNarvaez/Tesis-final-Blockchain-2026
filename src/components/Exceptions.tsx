@@ -25,6 +25,15 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 }) => {
   const [selectedCase, setSelectedCase] = useState<ExceptionCase | null>(null);
   const [activeFilter, setActiveFilter] = useState<'todos' | 'pendiente' | 'procesados'>('todos');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const triggerToast = (message: string) => {
+    setToastMessage(message);
+    const timer = setTimeout(() => {
+      setToastMessage(null);
+    }, 3000);
+    return timer;
+  };
 
   const filteredExceptions = exceptions.filter(e => {
     if (activeFilter === 'todos') return true;
@@ -58,6 +67,14 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-2.5 transition-all duration-300">
+          <CheckCircle className="h-5 w-5" />
+          <span className="text-xs font-semibold text-white">{toastMessage}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
@@ -68,20 +85,23 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         {/* Status filters */}
         <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg">
           <button
+            type="button"
             onClick={() => setActiveFilter('todos')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 border ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border-blue-500/20' : 'text-slate-400 border-transparent'}`}
           >
             Todos ({exceptions.length})
           </button>
           <button
+            type="button"
             onClick={() => setActiveFilter('pendiente')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 border ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border-blue-500/20' : 'text-slate-400 border-transparent'}`}
           >
             Pendientes ({exceptions.filter(e => e.estado === 'pendiente').length})
           </button>
           <button
+            type="button"
             onClick={() => setActiveFilter('procesados')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 border ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border-blue-500/20' : 'text-slate-400 border-transparent'}`}
           >
             Procesados ({exceptions.filter(e => e.estado !== 'pendiente').length})
           </button>
@@ -106,13 +126,16 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 </div>
               ) : (
                 filteredExceptions.map(exc => (
-                  <div
+                  <button
                     key={exc.id}
+                    type="button"
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    aria-selected={selectedCase?.id === exc.id}
+                    aria-label={`Caso ${exc.id}: ${exc.motivo}. Exposición: Gs. ${exc.exposicion.toLocaleString()}`}
+                    className={`w-full text-left p-4 hover:bg-slate-950/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-blue-500 pl-3' : 'border-l-transparent pl-3'}`}
                   >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-1.5 text-left">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="text-xs font-bold text-slate-400 font-mono">{exc.id}</span>
                         {getPriorityBadge(exc.prioridad)}
                         {getStatusActionBadge(exc.estado)}
@@ -132,7 +155,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -185,33 +208,39 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                     <span className="text-slate-400 font-semibold block mb-2">Acción de Auditoría:</span>
 
                     <button
+                      type="button"
                       onClick={() => {
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
+                        triggerToast(`Caso ${selectedCase.id} aprobado con éxito`);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => {
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
+                        triggerToast(`Caso ${selectedCase.id} puesto en investigación`);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => {
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
+                        triggerToast(`Caso ${selectedCase.id} enviado a reprocesamiento`);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/50"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento
