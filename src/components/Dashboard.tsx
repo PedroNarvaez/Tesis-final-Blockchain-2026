@@ -82,19 +82,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <span className="text-xs font-semibold px-2 text-slate-400 uppercase tracking-wider">Escenarios:</span>
           <button
             onClick={() => setScenario('diario')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('diario')}`}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${getScenarioClass('diario')}`}
           >
             Operación Diaria
           </button>
           <button
             onClick={() => setScenario('mensual')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('mensual')}`}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${getScenarioClass('mensual')}`}
           >
             Cierre Mensual
           </button>
           <button
             onClick={() => setScenario('fraude')}
-            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all ${getScenarioClass('fraude')}`}
+            className={`px-3 py-1 text-xs font-semibold rounded-md border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${getScenarioClass('fraude')}`}
           >
             Monitoreo Antifraude
           </button>

@@ -69,19 +69,19 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg">
           <button
             onClick={() => setActiveFilter('todos')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Todos ({exceptions.length})
           </button>
           <button
             onClick={() => setActiveFilter('pendiente')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Pendientes ({exceptions.filter(e => e.estado === 'pendiente').length})
           </button>
           <button
             onClick={() => setActiveFilter('procesados')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Procesados ({exceptions.filter(e => e.estado !== 'pendiente').length})
           </button>
@@ -106,10 +106,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 </div>
               ) : (
                 filteredExceptions.map(exc => (
-                  <div
+                  <button
                     key={exc.id}
+                    type="button"
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    aria-label={`Caso ${exc.id}: ${exc.motivo}, exposición de Gs. ${exc.exposicion.toLocaleString()}`}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:relative ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -132,7 +134,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
