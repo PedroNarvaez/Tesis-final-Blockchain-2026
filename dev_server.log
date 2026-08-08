@@ -3,8 +3,9 @@
 > vite
 
 
-  VITE v8.1.5  ready in 302 ms
+  VITE v8.1.5  ready in 299 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
+4:50:27 PM [vite] (client) [optimizer] bundling dependencies...
  ELIFECYCLE  Command failed with exit code 143.

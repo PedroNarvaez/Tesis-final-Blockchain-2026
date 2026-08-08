@@ -90,10 +90,12 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
               {blocks.map((block) => {
                 const isSelected = selectedBlock?.indice === block.indice;
                 return (
-                  <div
+                  <button
                     key={block.indice}
+                    type="button"
                     onClick={() => setSelectedBlock(block)}
-                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 ${
+                    aria-label={`Bloque número ${block.indice}, confirmado por ${block.validador}, resumen: ${block.evidencias.datosResumen}`}
+                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       isSelected
                         ? 'bg-blue-600/10 border-blue-500'
                         : 'bg-slate-950 border-slate-800'
@@ -120,7 +122,7 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
                         Confirmado
                       </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
