@@ -84,8 +84,16 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row">
+      {/* Skip to Content link */}
+      <a
+        href="#main-content-pane"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-blue-600 focus:text-white focus:font-bold focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Saltar al contenido principal
+      </a>
+
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-slate-900 border-r border-slate-800 shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-slate-900 border-r border-slate-800 shrink-0" aria-label="Navegación principal">
         <div className="p-6 border-b border-slate-800 flex items-center gap-3">
           <Building className="h-6 w-6 text-blue-500 shrink-0" />
           <div>
@@ -94,7 +102,7 @@ function App() {
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <nav className="flex-1 px-4 py-6 space-y-1" aria-label="Menú de pestañas">
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -102,7 +110,8 @@ function App() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                aria-selected={isActive}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                   isActive
                     ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30 font-semibold'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
@@ -129,7 +138,9 @@ function App() {
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-slate-400 hover:text-white p-1"
+          aria-expanded={mobileMenuOpen}
+          aria-label="Abrir menú de navegación"
+          className="text-slate-400 hover:text-white p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -140,11 +151,11 @@ function App() {
         <div className="md:hidden fixed inset-0 z-50 bg-slate-950/90 flex flex-col p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-bold text-lg text-white">Menú Corporativo</h2>
-            <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-white">
+            <button onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar menú de navegación" className="text-slate-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md p-1">
               <X className="h-6 w-6" />
             </button>
           </div>
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-2" aria-label="Menú móvil de pestañas">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -155,7 +166,8 @@ function App() {
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all ${
+                  aria-selected={isActive}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                     isActive
                       ? 'bg-blue-600/20 text-blue-400 font-bold border border-blue-500/20'
                       : 'text-slate-400 hover:bg-slate-900'
@@ -171,7 +183,7 @@ function App() {
       )}
 
       {/* Main Content Pane */}
-      <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+      <main id="main-content-pane" className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
         {activeTab === 'dashboard' && (
           <Dashboard
             matches={matches}
