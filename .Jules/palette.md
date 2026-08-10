@@ -1,3 +1,7 @@
 ## 2026-07-20 - Accessible and Clickable Configuration Inputs and Checkboxes
 **Learning:** In complex enterprise dashboards, sidebar controls and filters often suffer from poor accessibility (missing htmlFor/id associations) and tiny click targets for checkbox/toggle inputs. Associating labels properly and making entire row blocks clickable with subtle hover highlights greatly enhances interaction convenience, especially on smaller screens or for keyboard-only/screen-reader users.
 **Action:** Always link form labels to their inputs using htmlFor and unique IDs. For checkboxes or toggles, wrap the descriptions in label tags and make the container interactive/clickable so that clicking any descriptive text toggles the target checkbox directly.
+
+## 2026-08-10 - Keyboard Interactivity and Focus Indication in Dense Worklists
+**Learning:** Interactive lists (like exception lists or queue logs) constructed using general wrapper elements like `<div>` instead of native `<button>` or `<a>` elements completely lock out keyboard and screen-reader users unless semantic roles and listeners are added explicitly. Proper visual focus outline styles (`focus-visible:ring-2`) and keyboard keypress handling (handling Enter and Space on keydown) make lists intuitive and fully accessible without changing the visual look.
+**Action:** Always add `role="button"`, `tabIndex={0}`, and `onKeyDown` listeners (supporting Space/Enter) to custom clickable card layout wrappers, coupled with distinct theme-compliant `focus-visible` ring outlines.

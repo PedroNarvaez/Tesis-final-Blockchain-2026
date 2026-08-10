@@ -56,32 +56,42 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
     }
   };
 
+  const handleCaseKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, exc: ExceptionCase) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setSelectedCase(exc);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Worklist de Excepciones</h1>
+          <h1 id="worklist-heading" className="text-2xl font-bold tracking-tight text-white">Worklist de Excepciones</h1>
           <p className="text-sm text-slate-400">Bandeja priorizada de desviaciones contables y operacionales pendientes de auditoría</p>
         </div>
 
         {/* Status filters */}
-        <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg">
+        <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg" role="group" aria-label="Filtros de estado de excepciones">
           <button
             onClick={() => setActiveFilter('todos')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-pressed={activeFilter === 'todos'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400'}`}
           >
             Todos ({exceptions.length})
           </button>
           <button
             onClick={() => setActiveFilter('pendiente')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-pressed={activeFilter === 'pendiente'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400'}`}
           >
             Pendientes ({exceptions.filter(e => e.estado === 'pendiente').length})
           </button>
           <button
             onClick={() => setActiveFilter('procesados')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            aria-pressed={activeFilter === 'procesados'}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20 font-bold' : 'text-slate-400'}`}
           >
             Procesados ({exceptions.filter(e => e.estado !== 'pendiente').length})
           </button>
@@ -93,13 +103,13 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
         {/* Cases List */}
         <div className="xl:col-span-2 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden" role="region" aria-labelledby="cases-list-title">
             <div className="p-4 border-b border-slate-800 bg-slate-950/20 flex justify-between items-center">
-              <span className="text-xs font-bold text-white uppercase tracking-wider">Casos Abiertos de Riesgo</span>
+              <span id="cases-list-title" className="text-xs font-bold text-white uppercase tracking-wider">Casos Abiertos de Riesgo</span>
               <span className="text-xs text-slate-400 font-semibold">Resolución conforme a SLA corporativo</span>
             </div>
 
-            <div className="divide-y divide-slate-800/60">
+            <div className="divide-y divide-slate-800/60" role="list" aria-label="Lista de excepciones de riesgo">
               {filteredExceptions.length === 0 ? (
                 <div className="text-center py-12 text-slate-500 text-sm">
                   No existen excepciones que requieran intervención en esta categoría.
@@ -109,7 +119,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <div
                     key={exc.id}
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    onKeyDown={(e) => handleCaseKeyDown(e, exc)}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={selectedCase?.id === exc.id}
+                    aria-label={`Caso ${exc.id}: ${exc.motivo}. Prioridad: ${exc.prioridad}, Estado: ${exc.estado}, Exposición: Gs. ${exc.exposicion.toLocaleString()}`}
+                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -189,7 +204,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -200,7 +215,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -211,7 +226,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento
