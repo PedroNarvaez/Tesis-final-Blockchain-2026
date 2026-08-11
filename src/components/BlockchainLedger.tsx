@@ -90,27 +90,28 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
               {blocks.map((block) => {
                 const isSelected = selectedBlock?.indice === block.indice;
                 return (
-                  <div
+                  <button
                     key={block.indice}
+                    type="button"
                     onClick={() => setSelectedBlock(block)}
-                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 ${
+                    className={`w-full text-left p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none relative focus-visible:z-10 ${
                       isSelected
                         ? 'bg-blue-600/10 border-blue-500'
                         : 'bg-slate-950 border-slate-800'
                     }`}
                   >
-                    <div className="flex items-center gap-4 min-w-0">
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
                       {/* Block index badge */}
                       <div className="h-10 w-10 shrink-0 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center font-mono font-bold text-sm text-blue-400">
                         #{block.indice}
                       </div>
 
-                      <div className="min-w-0">
-                        <span className="text-[10px] text-slate-500 font-semibold uppercase">{block.fecha} | {block.validador}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[10px] text-slate-500 font-semibold uppercase block">{block.fecha} | {block.validador}</span>
                         <h4 className="text-xs font-bold text-slate-200 truncate mt-0.5">{block.evidencias.datosResumen}</h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] font-mono text-slate-400 truncate max-w-[120px]">Hash: {block.hash}</span>
-                          <span className="text-[10px] font-mono text-slate-500 truncate max-w-[120px]">Prev: {block.hashAnterior}</span>
+                          <span className="text-[10px] font-mono text-slate-400 truncate max-w-[120px] block">Hash: {block.hash}</span>
+                          <span className="text-[10px] font-mono text-slate-500 truncate max-w-[120px] block">Prev: {block.hashAnterior}</span>
                         </div>
                       </div>
                     </div>
@@ -120,7 +121,7 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
                         Confirmado
                       </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

@@ -96,7 +96,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
         </div>
         <button
           onClick={handleExportCSV}
-          className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow transition-all cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           <Download className="h-4 w-4" />
           Exportar CSV
@@ -217,7 +217,7 @@ export const Reconciliation: React.FC<ReconciliationProps> = ({
                   <button
                     key={st}
                     onClick={() => setFilterStatus(st)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all border ${
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all border focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
                       filterStatus === st
                         ? 'bg-blue-600/15 border-blue-500 text-blue-400 font-bold'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
