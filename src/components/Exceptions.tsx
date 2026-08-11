@@ -69,19 +69,19 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         <div className="flex gap-2 bg-slate-950 p-1 border border-slate-800 rounded-lg">
           <button
             onClick={() => setActiveFilter('todos')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${activeFilter === 'todos' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Todos ({exceptions.length})
           </button>
           <button
             onClick={() => setActiveFilter('pendiente')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${activeFilter === 'pendiente' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Pendientes ({exceptions.filter(e => e.estado === 'pendiente').length})
           </button>
           <button
             onClick={() => setActiveFilter('procesados')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${activeFilter === 'procesados' ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20' : 'text-slate-400'}`}
           >
             Procesados ({exceptions.filter(e => e.estado !== 'pendiente').length})
           </button>
@@ -106,12 +106,13 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 </div>
               ) : (
                 filteredExceptions.map(exc => (
-                  <div
+                  <button
                     key={exc.id}
+                    type="button"
                     onClick={() => setSelectedCase(exc)}
-                    className={`p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
+                    className={`w-full text-left p-4 hover:bg-slate-950/20 cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none relative focus-visible:z-10 ${selectedCase?.id === exc.id ? 'bg-blue-600/5 border-l-4 border-l-blue-500 pl-3' : 'pl-4'}`}
                   >
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-400 font-mono">{exc.id}</span>
                         {getPriorityBadge(exc.prioridad)}
@@ -127,12 +128,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
+                    <div className="text-left md:text-right shrink-0">
                       <span className="text-[10px] text-slate-400 uppercase font-semibold block">Exposición Financiera</span>
                       <span className="text-sm font-bold text-rose-400 font-mono">Gs. {exc.exposicion.toLocaleString()}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">Confianza Score: {exc.confianza}%</span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -189,7 +190,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'aprobado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'aprobado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
                     >
                       <CheckCircle className="h-4 w-4" />
                       Aprobar Transacción
@@ -200,7 +201,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'investigando');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'investigando' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                     >
                       <Play className="h-4 w-4" />
                       Investigar / Solicitar Documentación
@@ -211,7 +212,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         onAction(selectedCase.id, 'reprocesado');
                         setSelectedCase(prev => prev ? { ...prev, estado: 'reprocesado' } : null);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:outline-none"
                     >
                       <RotateCw className="h-4 w-4" />
                       Forzar Reprocesamiento

@@ -74,7 +74,7 @@ export const DnitPortal: React.FC = () => {
 
         <button
           onClick={handleExportJSON}
-          className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow transition-all cursor-pointer shrink-0"
+          className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow transition-all cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
         >
           <Download className="h-4 w-4" />
           Exportar Evidencia JSON
