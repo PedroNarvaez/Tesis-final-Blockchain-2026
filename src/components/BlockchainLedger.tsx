@@ -93,7 +93,17 @@ export const BlockchainLedger: React.FC<BlockchainLedgerProps> = ({
                   <div
                     key={block.indice}
                     onClick={() => setSelectedBlock(block)}
-                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedBlock(block);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
+                    aria-label={`Bloque número ${block.indice}, validador ${block.validador}, hash ${block.hash}`}
+                    className={`p-4 rounded-lg border hover:border-slate-600 transition-all cursor-pointer flex items-center justify-between gap-4 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${
                       isSelected
                         ? 'bg-blue-600/10 border-blue-500'
                         : 'bg-slate-950 border-slate-800'
